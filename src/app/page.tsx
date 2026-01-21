@@ -5,7 +5,7 @@ import { ResumePreview } from '@/components/ResumePreview';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { useResumeStore } from '@/lib/resume-store';
-import { FileText, RotateCcw, Loader2 } from 'lucide-react';
+import { FileText, RotateCcw, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Dynamically import SectionManager with SSR disabled to avoid hydration mismatch
@@ -23,12 +23,19 @@ const SectionManager = dynamic(
 );
 
 export default function Home() {
-  const { resetResume } = useResumeStore();
+  const { resetToSample, clearResume } = useResumeStore();
 
-  const handleReset = () => {
-    if (window.confirm('Are you sure you want to reset your resume? This will clear all your data.')) {
-      resetResume();
-      toast.success('Resume reset successfully');
+  const handleResetToSample = () => {
+    if (window.confirm('Reset to sample data? This will replace all your current data with example content.')) {
+      resetToSample();
+      toast.success('Reset to sample data');
+    }
+  };
+
+  const handleClear = () => {
+    if (window.confirm('Clear all fields? This will remove all your data.')) {
+      clearResume();
+      toast.success('All fields cleared');
     }
   };
 
@@ -46,16 +53,25 @@ export default function Home() {
               <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 hidden sm:block">Create professional resumes in minutes</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
             <ThemeToggle />
             <Button
               variant="outline"
-              size="sm"
-              onClick={handleReset}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 text-xs sm:text-sm"
+              onClick={handleResetToSample}
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 h-9 w-9 sm:w-24 px-0 sm:px-3"
+              title="Reset to sample data"
             >
-              <RotateCcw className="w-4 h-4 sm:mr-2" />
-              <span className="hidden sm:inline">Reset</span>
+              <RotateCcw className="w-4 h-4 shrink-0" />
+              <span className="hidden sm:inline sm:ml-1.5 text-sm">Sample</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleClear}
+              className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950/50 h-9 w-9 sm:w-24 px-0 sm:px-3"
+              title="Clear all fields"
+            >
+              <Trash2 className="w-4 h-4 shrink-0" />
+              <span className="hidden sm:inline sm:ml-1.5 text-sm">Clear</span>
             </Button>
           </div>
         </div>
@@ -93,7 +109,6 @@ export default function Home() {
       {/* Footer */}
       <footer className="mt-auto border-t border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50 backdrop-blur-sm">
         <div className="max-w-[1800px] mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-400 text-center sm:text-left">
-          <p>Built with Next.js and LaTeX</p>
           <p>Your data is saved locally in your browser</p>
         </div>
       </footer>

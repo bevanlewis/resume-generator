@@ -11,6 +11,7 @@ import {
   AwardItem,
   ResumeSection,
   DEFAULT_RESUME_DATA,
+  SAMPLE_RESUME_DATA,
 } from './types';
 
 interface ResumeStore {
@@ -79,12 +80,14 @@ interface ResumeStore {
   
   // Actions - Reset
   resetResume: () => void;
+  resetToSample: () => void;
+  clearResume: () => void;
 }
 
 export const useResumeStore = create<ResumeStore>()(
   persist(
     (set) => ({
-      data: DEFAULT_RESUME_DATA,
+      data: SAMPLE_RESUME_DATA,
       pdfUrl: null,
       latexCode: null,
       isCompiling: false,
@@ -496,6 +499,22 @@ export const useResumeStore = create<ResumeStore>()(
 
       // Reset
       resetResume: () =>
+        set({
+          data: SAMPLE_RESUME_DATA,
+          pdfUrl: null,
+          latexCode: null,
+          compilationError: null,
+        }),
+
+      resetToSample: () =>
+        set({
+          data: SAMPLE_RESUME_DATA,
+          pdfUrl: null,
+          latexCode: null,
+          compilationError: null,
+        }),
+
+      clearResume: () =>
         set({
           data: DEFAULT_RESUME_DATA,
           pdfUrl: null,
