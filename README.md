@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resume Generator
 
-## Getting Started
+A modern, user-friendly resume generator that converts form inputs into professional LaTeX-formatted PDF resumes. Built with Next.js, featuring real-time preview, drag-and-drop section reordering, and local storage persistence.
 
-First, run the development server:
+![Resume Generator](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)
 
+## ✨ Features
+
+- **Easy Form Input** - Fill out your resume details through intuitive form sections
+- **Live PDF Preview** - See your resume rendered in real-time
+- **LaTeX Formatting** - Professional typesetting using Jake's Resume template
+- **Drag & Drop Reordering** - Customize section order with drag-and-drop
+- **Section Visibility** - Show/hide sections from the final PDF
+- **Dark Mode** - Toggle between light and dark themes
+- **Local Storage** - Your data persists in the browser
+- **Sample Data** - Start with example content based on Jake's Resume template
+- **Responsive Design** - Works on desktop and mobile devices
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui
+- **State Management**: Zustand with persistence
+- **PDF Rendering**: react-pdf
+- **Drag & Drop**: @dnd-kit
+- **LaTeX Compilation**: latex.ytotech.com API
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 20.16+ or 22.3+
+- npm, yarn, pnpm, or bun
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/resume-generator.git
+cd resume-generator
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## 📁 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── compile-pdf/      # PDF compilation endpoint
+│   │   └── generate-latex/   # LaTeX generation endpoint
+│   ├── globals.css           # Global styles & CSS variables
+│   ├── layout.tsx            # Root layout with providers
+│   └── page.tsx              # Main page component
+├── components/
+│   ├── resume-form/          # Form section components
+│   │   ├── AwardsSection.tsx
+│   │   ├── ContactSection.tsx
+│   │   ├── EducationSection.tsx
+│   │   ├── ExperienceSection.tsx
+│   │   ├── ProjectsSection.tsx
+│   │   ├── SkillsSection.tsx
+│   │   └── SummarySection.tsx
+│   ├── ui/                   # shadcn/ui components
+│   ├── PDFViewerClient.tsx   # Client-side PDF renderer
+│   ├── ResumePreview.tsx     # Preview panel with tabs
+│   ├── SectionManager.tsx    # Drag-and-drop section manager
+│   ├── theme-provider.tsx    # Dark mode provider
+│   └── theme-toggle.tsx      # Theme toggle button
+└── lib/
+    ├── latex-generator.ts    # LaTeX template & conversion
+    ├── resume-store.ts       # Zustand store
+    ├── types.ts              # TypeScript types & defaults
+    └── utils.ts              # Utility functions
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎨 Usage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Fill in your information** - Use the form sections on the left to enter your details
+2. **Reorder sections** - Drag sections to change their order in the PDF
+3. **Hide sections** - Click the eye icon to exclude sections from the PDF
+4. **Generate preview** - Click the "Generate" button to compile your resume
+5. **Download PDF** - Click "PDF" to download your resume
 
-## Deploy on Vercel
+### Quick Actions
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Sample** - Load example data based on Jake's Resume template
+- **Clear** - Remove all data and start fresh
+- **Theme Toggle** - Switch between light and dark mode
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🔧 API Endpoints
+
+### POST `/api/generate-latex`
+Converts resume data to LaTeX format.
+
+**Request Body:** `ResumeData` object  
+**Response:** `{ latex: string }`
+
+### POST `/api/compile-pdf`
+Compiles LaTeX to PDF using external API.
+
+**Request Body:** `{ latex: string }`  
+**Response:** `{ pdf: string }` (base64 encoded)
+
+## 📝 Credits
+
+- Resume template based on [Jake's Resume](https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs) from Overleaf
+- LaTeX compilation powered by [latex.ytotech.com](https://latex.ytotech.com)
+
+## 📄 License
+
+MIT License - feel free to use this project for your own resume!
