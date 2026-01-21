@@ -114,79 +114,85 @@ export function ResumePreview() {
   return (
     <div className="flex flex-col h-full bg-zinc-900 rounded-xl overflow-hidden shadow-2xl">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-zinc-800 border-b border-zinc-700">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-zinc-700/50">
-            <TabsTrigger value="preview" className="data-[state=active]:bg-zinc-600 text-zinc-300 data-[state=active]:text-white">
-              <FileText className="w-4 h-4 mr-2" />
-              Preview
-            </TabsTrigger>
-            <TabsTrigger value="latex" className="data-[state=active]:bg-zinc-600 text-zinc-300 data-[state=active]:text-white">
-              <Code className="w-4 h-4 mr-2" />
-              LaTeX
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <div className="flex flex-col gap-2 px-3 py-2 sm:py-3 bg-zinc-800 border-b border-zinc-700">
+        {/* Top row: Tabs and action buttons */}
+        <div className="flex items-center justify-between gap-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="bg-zinc-700/50 h-8">
+              <TabsTrigger value="preview" className="data-[state=active]:bg-zinc-600 text-zinc-300 data-[state=active]:text-white text-xs px-2 h-7">
+                <FileText className="w-3.5 h-3.5 mr-1" />
+                Preview
+              </TabsTrigger>
+              <TabsTrigger value="latex" className="data-[state=active]:bg-zinc-600 text-zinc-300 data-[state=active]:text-white text-xs px-2 h-7">
+                <Code className="w-3.5 h-3.5 mr-1" />
+                LaTeX
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-        <div className="flex items-center gap-2">
-          {activeTab === 'preview' && (
-            <>
+          <div className="flex items-center gap-1.5">
+            {activeTab === 'latex' && (
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setScale(s => Math.max(0.5, s - 0.1))}
-                className="text-zinc-400 hover:text-white hover:bg-zinc-700"
+                onClick={handleCopyLatex}
+                disabled={!latexCode}
+                className="text-zinc-400 hover:text-white hover:bg-zinc-700 h-7 w-7"
               >
-                <ZoomOut className="w-4 h-4" />
+                {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
               </Button>
-              <span className="text-sm text-zinc-400 min-w-[50px] text-center">
-                {Math.round(scale * 100)}%
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setScale(s => Math.min(2, s + 0.1))}
-                className="text-zinc-400 hover:text-white hover:bg-zinc-700"
-              >
-                <ZoomIn className="w-4 h-4" />
-              </Button>
-            </>
-          )}
-          
-          <Button
-            onClick={compileResume}
-            disabled={isCompiling}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            {isCompiling ? (
-              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
-              <Play className="w-4 h-4 mr-2" />
             )}
-            {isCompiling ? 'Generating...' : 'Generate'}
-          </Button>
-          
-          {activeTab === 'latex' && (
+            
+            <Button
+              onClick={compileResume}
+              disabled={isCompiling}
+              size="sm"
+              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-7 px-2"
+            >
+              {isCompiling ? (
+                <RefreshCw className="w-3.5 h-3.5 mr-1 animate-spin" />
+              ) : (
+                <Play className="w-3.5 h-3.5 mr-1" />
+              )}
+              {isCompiling ? 'Wait...' : 'Generate'}
+            </Button>
+            
+            <Button
+              onClick={handleDownload}
+              disabled={!pdfUrl || isCompiling}
+              size="sm"
+              className="bg-violet-600 hover:bg-violet-700 text-white text-xs h-7 px-2"
+            >
+              <Download className="w-3.5 h-3.5 mr-1" />
+              PDF
+            </Button>
+          </div>
+        </div>
+
+        {/* Bottom row: Zoom controls (only on preview tab) */}
+        {activeTab === 'preview' && (
+          <div className="flex items-center justify-center gap-1 sm:gap-2">
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleCopyLatex}
-              disabled={!latexCode}
-              className="text-zinc-400 hover:text-white hover:bg-zinc-700"
+              onClick={() => setScale(s => Math.max(0.5, s - 0.1))}
+              className="text-zinc-400 hover:text-white hover:bg-zinc-700 h-7 w-7"
             >
-              {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+              <ZoomOut className="w-3.5 h-3.5" />
             </Button>
-          )}
-          
-          <Button
-            onClick={handleDownload}
-            disabled={!pdfUrl || isCompiling}
-            className="bg-violet-600 hover:bg-violet-700 text-white"
-          >
-            <Download className="w-4 h-4 mr-2" />
-            Download
-          </Button>
-        </div>
+            <span className="text-xs text-zinc-400 min-w-[40px] text-center">
+              {Math.round(scale * 100)}%
+            </span>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setScale(s => Math.min(2, s + 0.1))}
+              className="text-zinc-400 hover:text-white hover:bg-zinc-700 h-7 w-7"
+            >
+              <ZoomIn className="w-3.5 h-3.5" />
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Content */}
