@@ -30,8 +30,8 @@ import {
 } from './resume-form';
 import { Eye, EyeOff, GripVertical } from 'lucide-react';
 import { Button } from './ui/button';
+import { SectionChromeProvider } from './section-frame';
 
-// Map section types to their components
 const sectionComponents: Record<SectionType, React.ComponentType> = {
   contact: ContactSection,
   summary: SummarySection,
@@ -42,7 +42,6 @@ const sectionComponents: Record<SectionType, React.ComponentType> = {
   awards: AwardsSection,
 };
 
-// Section labels for display
 const sectionLabels: Record<SectionType, string> = {
   contact: 'Contact',
   summary: 'Summary',
@@ -82,43 +81,42 @@ function SortableSection({ section, onToggleVisibility }: SortableSectionProps) 
       style={style}
       className={isDragging ? "z-50" : undefined}
     >
-      <div className="mb-2 flex items-center gap-1">
-        <button
-          type="button"
-          {...attributes}
-          {...listeners}
-          className="flex size-11 cursor-grab items-center justify-center text-muted-foreground hover:text-foreground active:cursor-grabbing"
-          aria-label={`Reorder ${label} section`}
-        >
-          <GripVertical className="size-4" />
-        </button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="size-11 text-muted-foreground hover:text-foreground"
-          onClick={() => onToggleVisibility(section.id)}
-          aria-label={
-            section.visible
-              ? `Hide ${label} from PDF`
-              : `Show ${label} in PDF`
-          }
-        >
-          {section.visible ? (
-            <Eye className="size-4" />
-          ) : (
-            <EyeOff className="size-4" />
-          )}
-        </Button>
-        {!section.visible && (
-          <span className="ml-auto font-mono text-xs uppercase tracking-widest text-muted-foreground">
-            Hidden in PDF
-          </span>
-        )}
-      </div>
-      <div className={!section.visible ? "opacity-50" : undefined}>
+      <SectionChromeProvider
+        hidden={!section.visible}
+        controls={
+          <div className="flex shrink-0 items-center self-stretch pl-1">
+            <button
+              type="button"
+              {...attributes}
+              {...listeners}
+              className="flex size-11 cursor-grab items-center justify-center text-muted-foreground hover:text-foreground active:cursor-grabbing"
+              aria-label={`Reorder ${label} section`}
+            >
+              <GripVertical className="size-4" />
+            </button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-11 text-muted-foreground hover:text-foreground"
+              onClick={() => onToggleVisibility(section.id)}
+              aria-label={
+                section.visible
+                  ? `Hide ${label} from PDF`
+                  : `Show ${label} in PDF`
+              }
+            >
+              {section.visible ? (
+                <Eye className="size-4" />
+              ) : (
+                <EyeOff className="size-4" />
+              )}
+            </Button>
+          </div>
+        }
+      >
         <SectionComponent />
-      </div>
+      </SectionChromeProvider>
     </div>
   );
 }
@@ -154,7 +152,6 @@ export function SectionManager() {
     }
   };
 
-  // Sort sections by order
   const sortedSections = [...sections].sort((a, b) => a.order - b.order);
 
   return (
@@ -167,7 +164,7 @@ export function SectionManager() {
         items={sortedSections.map(s => s.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-6">
+        <div className="space-y-4">
           {sortedSections.map((section) => (
             <SortableSection
               key={section.id}
