@@ -25,10 +25,10 @@ export function PDFViewerClient({ pdfUrl, scale }: PDFViewerClientProps) {
     <Document
       file={pdfUrl}
       onLoadSuccess={onDocumentLoadSuccess}
-      className="shadow-2xl"
       loading={
-        <div className="flex items-center justify-center h-96 text-zinc-400">
-          <RefreshCw className="w-6 h-6 animate-spin" />
+        <div className="flex h-96 items-center justify-center text-muted-foreground">
+          <RefreshCw className="size-5 animate-spin" />
+          <span className="sr-only">Loading PDF</span>
         </div>
       }
     >
@@ -37,7 +37,7 @@ export function PDFViewerClient({ pdfUrl, scale }: PDFViewerClientProps) {
           key={`page_${index + 1}`}
           pageNumber={index + 1}
           scale={scale}
-          className="mb-4 bg-white rounded shadow-lg"
+          className="mb-4 bg-card"
           renderTextLayer={false}
           renderAnnotationLayer={false}
         />
