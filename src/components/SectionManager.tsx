@@ -84,7 +84,7 @@ function SortableSection({ section, onToggleVisibility }: SortableSectionProps) 
       <SectionChromeProvider
         hidden={!section.visible}
         controls={
-          <div className="flex shrink-0 items-center self-stretch pl-1">
+          <div className="flex shrink-0 items-center pl-1">
             <button
               type="button"
               {...attributes}
