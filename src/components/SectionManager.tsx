@@ -74,45 +74,51 @@ function SortableSection({ section, onToggleVisibility }: SortableSectionProps) 
   };
 
   const SectionComponent = sectionComponents[section.type];
+  const label = sectionLabels[section.type];
 
   return (
-    <div ref={setNodeRef} style={style} className={`relative group ${isDragging ? 'z-50' : ''}`}>
-      {/* Section content */}
-      <div className={`transition-opacity ${!section.visible ? 'opacity-50' : ''} ${isDragging ? 'opacity-90 shadow-xl ring-2 ring-violet-500/20' : ''}`}>
-        <SectionComponent />
-      </div>
-
-      {/* Floating controls - appear on hover at top-left corner inside the card */}
-      <div className="absolute top-3 left-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-20 bg-white dark:bg-zinc-800 rounded-md shadow-md border border-zinc-200 dark:border-zinc-700 p-0.5">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={isDragging ? "z-50" : undefined}
+    >
+      <div className="mb-2 flex items-center gap-1">
         <button
+          type="button"
           {...attributes}
           {...listeners}
-          className="p-1.5 text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 rounded cursor-grab active:cursor-grabbing transition-colors"
-          title="Drag to reorder"
+          className="flex size-11 cursor-grab items-center justify-center text-muted-foreground hover:text-foreground active:cursor-grabbing"
+          aria-label={`Reorder ${label} section`}
         >
-          <GripVertical className="w-3.5 h-3.5" />
+          <GripVertical className="size-4" />
         </button>
         <Button
+          type="button"
           variant="ghost"
           size="icon"
-          className="h-7 w-7 text-zinc-400 hover:text-zinc-700"
+          className="size-11 text-muted-foreground hover:text-foreground"
           onClick={() => onToggleVisibility(section.id)}
-          title={section.visible ? 'Hide from PDF' : 'Show in PDF'}
+          aria-label={
+            section.visible
+              ? `Hide ${label} from PDF`
+              : `Show ${label} in PDF`
+          }
         >
           {section.visible ? (
-            <Eye className="w-3.5 h-3.5" />
+            <Eye className="size-4" />
           ) : (
-            <EyeOff className="w-3.5 h-3.5" />
+            <EyeOff className="size-4" />
           )}
         </Button>
+        {!section.visible && (
+          <span className="ml-auto font-mono text-xs uppercase tracking-widest text-muted-foreground">
+            Hidden in PDF
+          </span>
+        )}
       </div>
-
-      {/* Hidden badge */}
-      {!section.visible && (
-        <div className="absolute top-2 right-2 text-xs text-zinc-400 bg-zinc-100 px-2 py-0.5 rounded z-10">
-          Hidden in PDF
-        </div>
-      )}
+      <div className={!section.visible ? "opacity-50" : undefined}>
+        <SectionComponent />
+      </div>
     </div>
   );
 }
@@ -161,7 +167,7 @@ export function SectionManager() {
         items={sortedSections.map(s => s.id)}
         strategy={verticalListSortingStrategy}
       >
-        <div className="space-y-4">
+        <div className="space-y-6">
           {sortedSections.map((section) => (
             <SortableSection
               key={section.id}
