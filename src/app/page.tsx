@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { ResumePreview } from "@/components/ResumePreview";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -46,15 +47,15 @@ export default function Home() {
     <div className="flex min-h-dvh flex-col bg-background">
       <header className="sticky top-0 z-50 border-b border-border bg-background">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <a href="/" className="font-serif text-2xl tracking-tight text-foreground">
+          <Link href="/" className="font-serif text-2xl tracking-tight text-foreground">
             Resume
-          </a>
+          </Link>
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button
               variant="outline"
               onClick={handleResetToSample}
-              className="h-11 px-3"
+              className="size-11 sm:h-11 sm:w-auto sm:px-3"
               aria-label="Load sample resume"
             >
               <RotateCcw className="size-4" />
@@ -63,7 +64,7 @@ export default function Home() {
             <Button
               variant="outline"
               onClick={handleClear}
-              className="h-11 px-3 text-destructive hover:bg-destructive/10 hover:text-destructive"
+              className="size-11 sm:h-11 sm:w-auto sm:px-3 text-destructive hover:bg-destructive/10 hover:text-destructive"
               aria-label="Clear all fields"
             >
               <Trash2 className="size-4" />

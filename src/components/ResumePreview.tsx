@@ -113,7 +113,7 @@ export function ResumePreview() {
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-md border border-border bg-muted/40">
       <div className="flex flex-col gap-2 border-b border-border bg-card px-3 py-2">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="h-11">
               <TabsTrigger value="preview" className="h-9 px-3 text-sm">
@@ -125,7 +125,7 @@ export function ResumePreview() {
             </TabsList>
           </Tabs>
 
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             {activeTab === "latex" && (
               <Button
                 variant="ghost"
