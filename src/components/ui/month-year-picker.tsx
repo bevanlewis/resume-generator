@@ -73,21 +73,22 @@ export function MonthYearPicker({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
+          aria-label={value || placeholder}
           className={cn(
-            'w-full justify-between font-normal',
+            'h-11 w-full justify-between font-normal',
             !value && 'text-muted-foreground',
             className
           )}
         >
           <span className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-zinc-400" />
+            <Calendar className="w-4 h-4 text-muted-foreground" />
             {value || placeholder}
           </span>
           <ChevronDown className="w-4 h-4 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[280px] p-0" align="start">
-        <div className="p-3 border-b border-zinc-100 dark:border-zinc-700">
+        <div className="p-3 border-b border-border">
           {/* Year selector */}
           <div className="flex items-center justify-between mb-3">
             <Button
@@ -101,7 +102,7 @@ export function MonthYearPicker({
             <select
               value={displayYear}
               onChange={(e) => setDisplayYear(parseInt(e.target.value))}
-              className="text-sm font-medium bg-transparent border-none focus:outline-none cursor-pointer text-zinc-900 dark:text-zinc-100"
+              className="text-sm font-medium bg-transparent border-none text-foreground"
             >
               {years.map(year => (
                 <option key={year} value={year}>{year}</option>
@@ -127,10 +128,7 @@ export function MonthYearPicker({
                   variant={isSelected ? 'default' : 'ghost'}
                   size="sm"
                   onClick={() => handleMonthSelect(index)}
-                  className={cn(
-                    'h-8 text-xs',
-                    isSelected && 'bg-violet-600 text-white hover:bg-violet-700'
-                  )}
+                  className="h-8 text-xs"
                 >
                   {month}
                 </Button>
@@ -141,15 +139,12 @@ export function MonthYearPicker({
 
         {/* Present option */}
         {allowPresent && (
-          <div className="p-2 border-t border-zinc-100 dark:border-zinc-700">
+          <div className="p-2 border-t border-border">
             <Button
               variant={isPresent ? 'default' : 'outline'}
               size="sm"
               onClick={handlePresentSelect}
-              className={cn(
-                'w-full',
-                isPresent && 'bg-emerald-600 text-white hover:bg-emerald-700'
-              )}
+              className="w-full"
             >
               Present (Current)
             </Button>
