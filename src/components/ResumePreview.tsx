@@ -13,8 +13,6 @@ import {
   ZoomOut, 
   Copy, 
   Check,
-  FileText,
-  Code,
   AlertCircle,
   Play
 } from 'lucide-react';
@@ -25,8 +23,9 @@ const PDFViewer = dynamic(
   { 
     ssr: false,
     loading: () => (
-      <div className="flex items-center justify-center h-96 text-zinc-400">
-        <RefreshCw className="w-6 h-6 animate-spin" />
+      <div className="flex h-96 items-center justify-center text-muted-foreground">
+        <RefreshCw className="size-6 animate-spin" />
+        <span className="sr-only">Loading PDF</span>
       </div>
     )
   }
@@ -112,133 +111,135 @@ export function ResumePreview() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-zinc-900 rounded-xl overflow-hidden shadow-2xl">
-      {/* Header */}
-      <div className="flex flex-col gap-2 px-3 py-2 sm:py-3 bg-zinc-800 border-b border-zinc-700">
-        {/* Top row: Tabs and action buttons */}
+    <div className="flex h-full flex-col overflow-hidden rounded-md border border-border bg-muted/40">
+      <div className="flex flex-col gap-2 border-b border-border bg-card px-3 py-2">
         <div className="flex items-center justify-between gap-2">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="bg-zinc-700/50 h-8">
-              <TabsTrigger value="preview" className="data-[state=active]:bg-zinc-600 text-zinc-300 data-[state=active]:text-white text-xs px-2 h-7">
-                <FileText className="w-3.5 h-3.5 mr-1" />
+            <TabsList className="h-11">
+              <TabsTrigger value="preview" className="h-9 px-3 text-sm">
                 Preview
               </TabsTrigger>
-              <TabsTrigger value="latex" className="data-[state=active]:bg-zinc-600 text-zinc-300 data-[state=active]:text-white text-xs px-2 h-7">
-                <Code className="w-3.5 h-3.5 mr-1" />
-                LaTeX
+              <TabsTrigger value="latex" className="h-9 px-3 text-sm">
+                Source
               </TabsTrigger>
             </TabsList>
           </Tabs>
 
           <div className="flex items-center gap-1.5">
-            {activeTab === 'latex' && (
+            {activeTab === "latex" && (
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={handleCopyLatex}
                 disabled={!latexCode}
-                className="text-zinc-400 hover:text-white hover:bg-zinc-700 h-7 w-7"
+                className="size-11"
+                aria-label={copied ? "Copied" : "Copy LaTeX"}
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? (
+                  <Check className="size-4" />
+                ) : (
+                  <Copy className="size-4" />
+                )}
               </Button>
             )}
-            
+
             <Button
               onClick={compileResume}
               disabled={isCompiling}
               size="sm"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs h-7 px-2"
+              className="h-11 px-3"
             >
               {isCompiling ? (
-                <RefreshCw className="w-3.5 h-3.5 mr-1 animate-spin" />
+                <RefreshCw className="size-4 animate-spin" />
               ) : (
-                <Play className="w-3.5 h-3.5 mr-1" />
+                <Play className="size-4" />
               )}
-              {isCompiling ? 'Wait...' : 'Generate'}
+              {isCompiling ? "Generating" : "Generate"}
             </Button>
-            
+
             <Button
               onClick={handleDownload}
               disabled={!pdfUrl || isCompiling}
+              variant="outline"
               size="sm"
-              className="bg-violet-600 hover:bg-violet-700 text-white text-xs h-7 px-2"
+              className="h-11 px-3"
             >
-              <Download className="w-3.5 h-3.5 mr-1" />
+              <Download className="size-4" />
               PDF
             </Button>
           </div>
         </div>
 
-        {/* Bottom row: Zoom controls (only on preview tab) */}
-        {activeTab === 'preview' && (
-          <div className="flex items-center justify-center gap-1 sm:gap-2">
+        {activeTab === "preview" && (
+          <div className="flex items-center justify-center gap-2">
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setScale(s => Math.max(0.5, s - 0.1))}
-              className="text-zinc-400 hover:text-white hover:bg-zinc-700 h-7 w-7"
+              onClick={() => setScale((s) => Math.max(0.5, s - 0.1))}
+              className="size-11"
+              aria-label="Zoom out"
             >
-              <ZoomOut className="w-3.5 h-3.5" />
+              <ZoomOut className="size-4" />
             </Button>
-            <span className="text-xs text-zinc-400 min-w-[40px] text-center">
+            <span className="min-w-[3rem] text-center font-mono text-xs text-muted-foreground">
               {Math.round(scale * 100)}%
             </span>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setScale(s => Math.min(2, s + 0.1))}
-              className="text-zinc-400 hover:text-white hover:bg-zinc-700 h-7 w-7"
+              onClick={() => setScale((s) => Math.min(2, s + 0.1))}
+              className="size-11"
+              aria-label="Zoom in"
             >
-              <ZoomIn className="w-3.5 h-3.5" />
+              <ZoomIn className="size-4" />
             </Button>
           </div>
         )}
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-hidden">
-        {activeTab === 'preview' ? (
+        {activeTab === "preview" ? (
           <ScrollArea className="h-full">
-            <div className="flex flex-col items-center py-8 px-4 min-h-full">
+            <div className="flex min-h-full flex-col items-center px-4 py-8">
               {isCompiling ? (
-                <div className="flex flex-col items-center justify-center h-96 text-zinc-400">
-                  <RefreshCw className="w-8 h-8 animate-spin mb-4" />
-                  <p>Compiling your resume...</p>
+                <div className="flex h-96 flex-col items-center justify-center text-muted-foreground">
+                  <RefreshCw className="mb-4 size-6 animate-spin" />
+                  <p>Setting type…</p>
                 </div>
               ) : compilationError ? (
-                <div className="flex flex-col items-center justify-center h-96 text-red-400 max-w-md text-center">
-                  <AlertCircle className="w-8 h-8 mb-4" />
-                  <p className="font-medium mb-2">Compilation Error</p>
-                  <p className="text-sm text-zinc-500">{compilationError}</p>
+                <div className="flex h-96 max-w-md flex-col items-center justify-center text-center">
+                  <AlertCircle className="mb-4 size-6 text-destructive" />
+                  <p className="mb-2 font-medium text-foreground">Could not compile</p>
+                  <p className="text-sm text-muted-foreground">{compilationError}</p>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={compileResume}
-                    className="mt-4 border-zinc-600 text-zinc-300 hover:bg-zinc-700"
+                    className="mt-4 h-11"
                   >
-                    Try Again
+                    Try again
                   </Button>
                 </div>
               ) : pdfUrl ? (
                 <PDFViewer pdfUrl={pdfUrl} scale={scale} />
               ) : (
-                <div className="flex flex-col items-center justify-center h-96 text-zinc-400 text-center px-4">
-                  <FileText className="w-12 h-12 mb-4 text-zinc-600" />
-                  <p className="text-lg font-medium mb-2">Ready to Generate</p>
-                  <p className="text-sm text-zinc-500 max-w-xs mb-6">
-                    Fill out your information on the left, then click the Generate button to create your resume preview.
+                <div className="flex h-96 flex-col items-center justify-center px-4 text-center">
+                  <p className="mb-2 font-serif text-xl text-foreground">No PDF yet</p>
+                  <p className="mb-6 max-w-xs text-sm text-muted-foreground">
+                    Fill in a name, then generate. The preview stays here until you generate
+                    again.
                   </p>
                   <Button
                     onClick={compileResume}
                     disabled={isCompiling || !data.contact.name}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="h-11"
                   >
-                    <Play className="w-4 h-4 mr-2" />
-                    Generate Preview
+                    <Play className="size-4" />
+                    Generate
                   </Button>
                   {!data.contact.name && (
-                    <p className="text-xs text-zinc-500 mt-2">
-                      Enter your name to get started
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Add a name in Contact first.
                     </p>
                   )}
                 </div>
@@ -247,8 +248,8 @@ export function ResumePreview() {
           </ScrollArea>
         ) : (
           <ScrollArea className="h-full">
-            <pre className="p-4 text-sm text-zinc-300 font-mono whitespace-pre-wrap">
-              {latexCode || '% Your LaTeX code will appear here after entering your information'}
+            <pre className="p-4 font-mono text-sm whitespace-pre-wrap text-foreground">
+              {latexCode || "% Generate once to see the LaTeX source."}
             </pre>
           </ScrollArea>
         )}
